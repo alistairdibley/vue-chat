@@ -1,11 +1,13 @@
-import asyncio
 
 from sanic import Sanic
-from sanic.response import html
-
+from sanic.response import html, json
+from db import ChatFactory
 import socketio
+
+
 mgr = socketio.AsyncRedisManager('redis://127.0.0.1:6379/1')
-sio = socketio.AsyncServer(client_manager=mgr, async_mode='sanic')
+#sio = socketio.AsyncServer(client_manager=mgr, async_mode='sanic')
+sio = socketio.AsyncServer(async_mode='sanic')
 app = Sanic()
 sio.attach(app)
 
@@ -44,8 +46,9 @@ async def test_broadcast_message(sid, message):
 
 @sio.on('join', namespace='/test')
 async def join(sid, message):
-	sio.enter_room(sid, message['room'], namespace='/test')
-	await sio.emit('rooms', {'data': 'Entered room: ' + message['room'], 'sid':sid},
+    sio.enter_room(sid, message['room'], namespace='/test')
+    ChatFactory().add_room(room_name=message['room'], user='alistair@test')
+    await sio.emit('rooms', {'data': 'Entered room: ' + message['room'], 'sid':sid},
                    room=sid, namespace='/test')
 
 

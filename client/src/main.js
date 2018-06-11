@@ -5,7 +5,7 @@ import VueSocketio from 'vue-socket.io';
 import io from 'socket.io-client';
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue)
-const socketInstance = io('http://192.168.2.114:8000/test', {
+const socketInstance = io('http://127.0.0.1:8000/test', {
   transports: ['websocket'],
 });
 

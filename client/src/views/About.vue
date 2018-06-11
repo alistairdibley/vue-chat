@@ -45,10 +45,10 @@
                         this.messages.push(data)
                     }
                 },
-                    this.$options.sockets.rooms = (data) => {
-                        console.log(data)
-                        this.sid = data.sid
-                    }
+                this.$options.sockets.rooms = (data) => {
+                    console.log(data)
+                    this.sid = data.sid
+                }
             },
         },
         methods: {
@@ -58,6 +58,7 @@
             },
             sendRoomMessage: function (message) {
                 console.log(this.selected)
+                console.log(this.room_name)
                 this.$socket.emit('room_event', {'room': this.room_name, 'data': this.message})
             },
         }
