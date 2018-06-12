@@ -1,40 +1,40 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import {getBlogs} from './http_common';
+import {getRooms} from "./http-common";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    blogs:[],
+    rooms:[],
     loading:[]
   },
   mutations: {
-    updateBlogs(state, blogs) {
-      state.blogs = blogs
+    updateRooms(state, rooms) {
+      state.rooms = rooms
     },
     changeLoadingState(state, loading) {
       state.loading = loading
     }
   },
   actions: {
-    getAllBlogs({
+    getAllRooms({
       commit
     }) {
-      getBlogs().then((response) => {
+      getRooms().then((response) => {
         console.log(response.data, this)
-        commit('updateBlogs', response.data)
+        commit('updateRooms', response.data)
         commit('changeLoadingState', false)
       })
     },
-  getBlogById({
-    commit
-  }, id) {
-    console.log(id)
-    getBlogs(id.Id).then((response) => {
-      console.log(response.data, this)
-      commit('updateBlogs', response.data)
-    })
-  },
+  // getBlogById({
+  //   commit
+  // }, id) {
+  //   console.log(id)
+  //   getBlogs(id.Id).then((response) => {
+  //     console.log(response.data, this)
+  //     commit('updateBlogs', response.data)
+  //   })
+  // },
 }
 });

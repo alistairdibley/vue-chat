@@ -1,6 +1,7 @@
 
 from sanic import Sanic
 from sanic.response import html, json
+from sanic_cors import CORS, cross_origin
 from db import ChatFactory
 import socketio
 
@@ -9,6 +10,7 @@ mgr = socketio.AsyncRedisManager('redis://127.0.0.1:6379/1')
 #sio = socketio.AsyncServer(client_manager=mgr, async_mode='sanic')
 sio = socketio.AsyncServer(async_mode='sanic')
 app = Sanic()
+CORS(app, automatic_options=True)
 sio.attach(app)
 
 
@@ -31,6 +33,11 @@ def before_server_start(sanic, loop):
 async def index(request):
     with open('app.html') as f:
         return html(f.read())
+
+
+@app.route('/rooms')
+async def rooms(request):
+    return json(ChatFactory().get_rooms())
 
 
 @sio.on('my event', namespace='/test')

@@ -13,18 +13,19 @@
       <b-form-select :v-model="selected" :options="room_select" />
       <b-button type="submit" variant="primary">Message Send</b-button>
     </b-form>
+    <b-table striped hover @row-clicked="clickonRow" :items="rooms"></b-table>
     <b-table striped hover :items="messages" ></b-table>
 
   </div>
 </template>
 <script>
+    import Vuex from "vuex";
     export default {
         data() {
             return {
                 test: {},
                 room: '',
                 room_name: null,
-                rooms: [],
                 message: 'Hi',
                 messages: [],
                 sid: null,
@@ -36,6 +37,9 @@
                 selected: null,
                 show: true
             }
+        },
+        created() {
+            this.$store.dispatch('getAllRooms')
         },
         sockets: {
             connect: function () {
@@ -55,12 +59,21 @@
             clickJoinRoom: function (val) {
                 this.$socket.emit('join', {'room': this.room_name})
                 this.room_select.push({'value':this.room_name, 'text':this.room_name})
+                this.$store.dispatch('getAllRooms')
             },
             sendRoomMessage: function (message) {
                 console.log(this.selected)
                 console.log(this.room_name)
                 this.$socket.emit('room_event', {'room': this.room_name, 'data': this.message})
             },
+            clickonRow: function (item, index, event) {
+                console.log(item)
+            }
+        },
+        computed: {
+            rooms() {
+                return this.$store.state.rooms
+            }
         }
 
     }

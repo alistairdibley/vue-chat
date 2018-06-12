@@ -1,4 +1,5 @@
 import datetime as dt
+from collections import OrderedDict
 from sqlalchemy import (
     Column,
     ForeignKey,
@@ -40,24 +41,48 @@ class ChatFactory(object):
     def __init__(self):
         self.session = DBSession()
     
+    @staticmethod
+    def _serialisation(model):
+        columns = model.__mapper__.c.keys()
+        result = OrderedDict()
+        for key in columns:
+             if isinstance(getattr(model, key), dt.datetime):
+                 result[key] = str(getattr(model, key))
+             else:
+                 result[key] = getattr(model, key)
+        return result
+
     def add_room(self, room_name, user):
         room = Room(name=room_name, owner = user)
         self.session.add(room)
         self.session.commit()
-        # return {'name':room.name, 'created':room.created_date, 'owner':room.owner}
+        return self._serialisation(room)
     
     def add_user(self, user):
         user = User(name=user)
         self.session.add(user)
         self.session.commit()
-
+        return self._serialisation(user)
+    
+    def add_message(self, message, user, room):
+        message = Message(content=message, user=user, room=room)
+        self.session.add(message)
+        self.session.commit()
+        return self._serialisation(message)
+        
     def get_rooms(self, all=False):
-        print(self.session.query(Room).all())
+        return [self._serialisation(r) for r in self.session.query(Room).all()]
+    
+    def get_users(self, all=False):
+        return [self._serialisation(r) for r in self.session.query(User).all()]
+
+    def get_messages_by_room(self, room):
+        return [self._serialisation(r) for r in self.session.query(Message).filter(Message.room == room).all()]
 
 
 if __name__ in '__main__':
    # Base.metadata.create_all(engine)
 
    cf = ChatFactory()
-   cf.add_user('alistair@test')
+   print(cf.get_rooms('alistair@test'))
    
