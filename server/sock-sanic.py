@@ -1,9 +1,10 @@
 
-from sanic import Sanic
+from sanic import Sanic, request
 from sanic.response import html, json
 from sanic_cors import CORS, cross_origin
 from db import ChatFactory
 import socketio
+from sqlalchemy.exc import IntegrityError
 
 
 mgr = socketio.AsyncRedisManager('redis://127.0.0.1:6379/1')
@@ -37,7 +38,9 @@ async def index(request):
 
 @app.route('/rooms')
 async def rooms(request):
-    return json(ChatFactory().get_rooms())
+    if not request.args:
+        return json(ChatFactory().get_rooms())
+    return json(ChatFactory().get_rooms_by_user_name(request.args['user_name'][0]))
 
 
 @sio.on('my event', namespace='/test')
@@ -54,7 +57,14 @@ async def test_broadcast_message(sid, message):
 @sio.on('join', namespace='/test')
 async def join(sid, message):
     sio.enter_room(sid, message['room'], namespace='/test')
-    ChatFactory().add_room(room_name=message['room'], user='alistair@test')
+    try:
+        ChatFactory().add_room(room_name=message['room'], user='alistair@test')
+    except IntegrityError:
+        pass
+    try:
+        ChatFactory().add_user_room(room_name=message['room'], user_name='alistair@test')
+    except IntegrityError as e:
+        pass
     await sio.emit('rooms', {'data': 'Entered room: ' + message['room'], 'sid':sid},
                    room=sid, namespace='/test')
 

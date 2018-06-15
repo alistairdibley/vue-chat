@@ -6,7 +6,8 @@ from sqlalchemy import (
     Integer,
     String,
     DateTime,
-    Text
+    Text, 
+    PrimaryKeyConstraint
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -26,6 +27,12 @@ class Room(Base):
     __tablename__ = 'room'
     name = Column(String(50), primary_key=True)
     created_date = Column(DateTime, default=dt.datetime.utcnow())
+    owner = Column(String(50), ForeignKey('user.name'))
+
+class UserRoom(Base):
+    __tablename__ = 'user_room'
+    room_name = Column(String(50), ForeignKey('room.name'), primary_key=True)
+    user_name = Column(String(50), ForeignKey('user.name'), primary_key=True)
     owner = Column(String(50), ForeignKey('user.name'))
 
 class Message(Base):
@@ -58,6 +65,11 @@ class ChatFactory(object):
         self.session.commit()
         return self._serialisation(room)
     
+    def add_user_room(self, room_name, user_name):
+        user_room = UserRoom(room_name=room_name, user_name=user_name)
+        self.session.add(user_room)
+        self.session.commit()
+
     def add_user(self, user):
         user = User(name=user)
         self.session.add(user)
@@ -73,6 +85,9 @@ class ChatFactory(object):
     def get_rooms(self, all=False):
         return [self._serialisation(r) for r in self.session.query(Room).all()]
     
+    def get_rooms_by_user_name(self, user_name):
+        return [self._serialisation(r) for r in self.session.query(Room).join(UserRoom).filter(UserRoom.user_name == user_name).all()]
+    
     def get_users(self, all=False):
         return [self._serialisation(r) for r in self.session.query(User).all()]
 
@@ -81,7 +96,7 @@ class ChatFactory(object):
 
 
 if __name__ in '__main__':
-   # Base.metadata.create_all(engine)
+   Base.metadata.create_all(engine)
 
    cf = ChatFactory()
    print(cf.get_rooms('alistair@test'))

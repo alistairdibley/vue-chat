@@ -10,10 +10,10 @@
       <label class="sr-only" for="inlineFormInputName2">Name</label>
       <b-input class="mb-2 mr-sm-2 mb-sm-0" id="inlineFormInputName2" placeholder="Message" v-model="message"/>
       <label class="sr-only" for="inlineFormInputGroupUsername2">Username</label>
-      <b-form-select :v-model="selected" :options="room_select" />
+      <b-form-select :v-model="selected" :options="rooms" />
       <b-button type="submit" variant="primary">Message Send</b-button>
     </b-form>
-    <b-table striped hover @row-clicked="clickonRow" :items="rooms"></b-table>
+    <b-table striped hover @row-clicked="clickonRow" :items="user_rooms"></b-table>
     <b-table striped hover :items="messages" ></b-table>
 
   </div>
@@ -39,6 +39,7 @@
             }
         },
         created() {
+            this.$store.dispatch('getUserRooms', 'alistair@test')
             this.$store.dispatch('getAllRooms')
         },
         sockets: {
@@ -62,8 +63,8 @@
                 this.$store.dispatch('getAllRooms')
             },
             sendRoomMessage: function (message) {
-                console.log(this.selected)
-                console.log(this.room_name)
+                // console.log(this.selected)
+                // console.log(this.room_name)
                 this.$socket.emit('room_event', {'room': this.room_name, 'data': this.message})
             },
             clickonRow: function (item, index, event) {
@@ -73,7 +74,11 @@
         computed: {
             rooms() {
                 return this.$store.state.rooms
+            },
+            user_rooms() {
+                return this.$store.state.user_rooms
             }
+
         }
 
     }
