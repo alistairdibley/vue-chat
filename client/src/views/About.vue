@@ -1,20 +1,26 @@
 <template>
   <div class="about">
-    <b-form @submit="clickJoinRoom" inline>
-      <label class="sr-only" for="inlineFormInputName2">Name</label>
-      <b-input class="mb-2 mr-sm-2 mb-sm-0" id="inlineFormInputName2" placeholder="Room Name" v-model="room_name"/>
-      <label class="sr-only" for="inlineFormInputGroupUsername2">Username</label>
-      <b-button  type="submit" variant="primary">Join</b-button>
-    </b-form>
-    <b-form @submit="sendRoomMessage" inline>
-      <label class="sr-only" for="inlineFormInputName2">Name</label>
-      <b-input class="mb-2 mr-sm-2 mb-sm-0" id="inlineFormInputName2" placeholder="Message" v-model="message"/>
-      <label class="sr-only" for="inlineFormInputGroupUsername2">Username</label>
-      <b-form-select :v-model="selected" :options="rooms" />
-      <b-button type="submit" variant="primary">Message Send</b-button>
-    </b-form>
-    <b-table striped hover @row-clicked="clickonRow" :items="user_rooms"></b-table>
-    <b-table striped hover :items="messages" ></b-table>
+        <b-form @submit="clickJoinRoom" inline>
+        <label class="sr-only" for="inlineFormInputName2">Name</label>
+        <b-input class="mb-2 mr-sm-2 mb-sm-0" id="inlineFormInputName2" placeholder="Room Name" v-model="room_name"/>
+        <label class="sr-only" for="inlineFormInputGroupUsername2">Username</label>
+        <b-button  type="submit" variant="primary">Create</b-button>
+        </b-form>
+        <b-form @submit="sendRoomMessage" inline>
+        <label class="sr-only" for="inlineFormInputName2">Name</label>
+        <b-input class="mb-2 mr-sm-2 mb-sm-0" id="inlineFormInputName2" placeholder="Message" v-model="message"/>
+        <label class="sr-only" for="inlineFormInputGroupUsername2">Username</label>
+        <b-button type="submit" variant="primary">Message Send</b-button>
+        </b-form>
+    <b-container class="bv-example-row">
+        <b-row align-h="end">
+             <b-col><b-table striped hover :items="messages" ></b-table></b-col>
+            <b-col cols="4"><b-table :small="true" striped hover @row-clicked="clickonRow" :items="user_rooms"></b-table></b-col>
+        </b-row>
+        <b-row>
+            <b-col cols="4"><b-table striped hover :items="tester"></b-table></b-col>
+        </b-row>
+    </b-container>
 
   </div>
 </template>
@@ -25,15 +31,11 @@
             return {
                 test: {},
                 room: '',
+                tester: [{name: 'a'}, {name: 'This is <i>raw <strong>HTML</strong></i> <span style="color:red">content</span>'}],
                 room_name: null,
                 message: 'Hi',
                 messages: [],
                 sid: null,
-                room_select: [
-                    {text: 'Select One', value: null, disabled:true},
-                    {text: 'Tester', value: 'tester', selected:true},
-                    {text: 'Tester2', value: 'tester2',},
-                ],
                 selected: null,
                 show: true
             }
@@ -63,12 +65,13 @@
                 this.$store.dispatch('getAllRooms')
             },
             sendRoomMessage: function (message) {
-                // console.log(this.selected)
-                // console.log(this.room_name)
+                console.log(this.message)
+                console.log(this.room_name)
                 this.$socket.emit('room_event', {'room': this.room_name, 'data': this.message})
             },
             clickonRow: function (item, index, event) {
-                console.log(item)
+                this.$socket.emit('join', {'room': item.name})
+                this.room_name = item.name
             }
         },
         computed: {
@@ -78,8 +81,6 @@
             user_rooms() {
                 return this.$store.state.user_rooms
             }
-
         }
-
     }
 </script>
