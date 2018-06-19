@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     rooms: [],
     user_rooms: [],
-    loading: []
+    loading: [],
+    user_name: null
   },
   mutations: {
     updateRooms(state, rooms) {
@@ -19,6 +20,9 @@ export default new Vuex.Store({
     },
     changeLoadingState(state, loading) {
       state.loading = loading
+    },
+    setUserName(state, userName) {
+      state.user_name = userName
     }
   },
   actions: {
@@ -26,7 +30,7 @@ export default new Vuex.Store({
       commit
     }, user_name ) {
       getRooms(user_name).then((response) => {
-        console.log(response.data, this)
+        // console.log(response.data, this)
         commit('updateUserRooms', response.data)
         commit('changeLoadingState', false)
       })
@@ -35,19 +39,10 @@ export default new Vuex.Store({
       commit
     }) {
       getRooms().then((response) => {
-        console.log(response.data, this)
+        // console.log(response.data, this)
         commit('updateRooms', response.data)
         commit('changeLoadingState', false)
       })
     },
-  // getBlogById({
-  //   commit
-  // }, id) {
-  //   console.log(id)
-  //   getBlogs(id.Id).then((response) => {
-  //     console.log(response.data, this)
-  //     commit('updateBlogs', response.data)
-  //   })
-  // },
 }
 });

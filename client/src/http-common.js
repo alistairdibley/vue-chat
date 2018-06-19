@@ -8,6 +8,7 @@ export const HTTP = axios.create({
 });
  
 export function getRooms(user_name) {
+  console.log(user_name)
   if (user_name) {
     return HTTP.get('rooms',{params:{user_name:user_name}})
     .then(response => response)

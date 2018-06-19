@@ -41,8 +41,9 @@
             }
         },
         created() {
-            this.$store.dispatch('getUserRooms', 'alistair@test')
-            this.$store.dispatch('getAllRooms')
+            console.log(this.user_name)
+            // this.$store.dispatch('getUserRooms', this.user_name)
+            // this.$store.dispatch('getAllRooms')
         },
         sockets: {
             connect: function () {
@@ -53,7 +54,7 @@
                     }
                 },
                 this.$options.sockets.rooms = (data) => {
-                    console.log(data)
+                    // console.log(data)
                     this.sid = data.sid
                 }
             },
@@ -65,8 +66,8 @@
                 this.$store.dispatch('getAllRooms')
             },
             sendRoomMessage: function (message) {
-                console.log(this.message)
-                console.log(this.room_name)
+                // console.log(this.message)
+                // console.log(this.room_name)
                 this.$socket.emit('room_event', {'room': this.room_name, 'data': this.message})
             },
             clickonRow: function (item, index, event) {
@@ -80,6 +81,9 @@
             },
             user_rooms() {
                 return this.$store.state.user_rooms
+            },
+            user_name() {
+                return this.$store.user_name
             }
         }
     }

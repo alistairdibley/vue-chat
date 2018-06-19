@@ -16,13 +16,13 @@ sio.attach(app)
 
 
 async def background_task():
-	"""Example of how to send server generated events to clients."""
-	count = 0
-	while True:
-		await sio.sleep(5)
-		count += 1
-		await sio.emit('test', {'data': 'Server generated event:{}'.format(count)},
-					   namespace='/test')
+    """Example of how to send server generated events to clients."""
+    count = 0
+    while True:
+        await sio.sleep(5)
+        count += 1
+        await sio.emit('test', {'data': 'Server generated event:{}'.format(count)},
+                       namespace='/test')
 
 
 @app.listener('before_server_start')
@@ -86,8 +86,8 @@ async def close(sid, message):
 
 @sio.on('room_event', namespace='/test')
 async def send_room_message(sid, message):
-	print(message)
-	await sio.emit('response', {'data': message['data'], 'sid':sid, 'room': message['room']},
+    print(message)
+    await sio.emit('response', {'data': message['data'], 'sid': sid, 'room': message['room']},
                    room=message['room'], namespace='/test')
 
 
