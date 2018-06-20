@@ -1,47 +1,32 @@
-from socketIO_client import SocketIO, BaseNamespace
-import logging
-logging.getLogger('socketIO-client').setLevel(logging.DEBUG)
-logging.basicConfig()
+import socketio
+import eventlet
+import eventlet.wsgi
+from flask import Flask, render_template
 
+sio = socketio.Server()
+app = Flask(__name__)
 
-class Namespace(BaseNamespace):
+@app.route('/')
+def index():
+    """Serve the client-side application."""
+    return render_template('index.html')
 
-	def on_my_response(self, *args):
-		print('on_aaa_response', args)
-		self.emit('bbb')
+@sio.on('connect', namespace='/chat')
+def connect(sid, environ):
+    print("connect ", sid)
 
-	def on_message(self, data):
-		print('on_aaa_response', data)
-		self.emit('bbb')
-	def on_event(self, event, *args):
-		print(event)
+@sio.on('chat message', namespace='/chat')
+def message(sid, data):
+    print("message ", data)
+    sio.emit('reply', room=sid)
 
-	def on_connect(self):
-		print('[Connected]')
+@sio.on('disconnect', namespace='/chat')
+def disconnect(sid):
+    print('disconnect ', sid)
 
-	def on_reconnect(self):
-		print('[Reconnected]')
+if __name__ == '__main__':
+    # wrap Flask application with engineio's middleware
+    app = socketio.Middleware(sio, app)
 
-	def on_disconnect(self):
-		print('[Disconnected]')
-print('HI')
-socketIO = SocketIO('127.0.0.1', 8000, transports='websockets')
-print('HI')
-chat_namespace = socketIO.define(Namespace, '/test', )
-print('HI')
-# Listen
-# chat_namespace.on('my room event', on_aaa_response)
-# chat_namespace.on('my response', on_aaa_response)
-# chat_namespace.on('test', on_aaa_response)
-# chat_namespace.emit('join', {'room':'alistair'})
-# chat_namespace.emit('my room event',{'data':'test', "room":'alistair'})
-socketIO.wait(seconds=1)
-
-
-
-
-
-#socketIO = SocketIO('localhost', 8000, Namespace)
-
-print('HI')
-#socketIO.wait(seconds=1)
+    # deploy as an eventlet WSGI server
+    eventlet.wsgi.server(eventlet.listen(('', 8000)), app)
