@@ -21,7 +21,7 @@ def rooms():
         return jsonify(ChatFactory().get_rooms())
     return jsonify(ChatFactory().get_rooms_by_user_name(request.args['user_name']))
 
-@sio.on('connect', namespace='/chat')
+@sio.on('connect', namespace='/test')
 def connect(sid, environ):
     print("connect ", sid)
 

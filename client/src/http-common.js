@@ -6,7 +6,7 @@ export const HTTP = axios.create({
     Authorization: 'Bearer {token}'
   }
 });
- 
+
 export function getRooms(user_name) {
   console.log(user_name)
   if (user_name) {
@@ -20,6 +20,9 @@ export function getRooms(user_name) {
   }
 }
 
+export function addUser(user_name) {
+  return HTTP.post('user', user_name)
+}
 export function cube(x) {
   return x * x * x;
 }

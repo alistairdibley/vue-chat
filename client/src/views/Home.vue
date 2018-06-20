@@ -4,6 +4,17 @@
     <b-container class="bv-input">
       <b-row><h2>Welcome to Chat</h2></b-row>
       <b-row>
+        <b-form @submit="onSubmitLogin">
+          <b-form-input id="userName"
+                        type="text"
+                        v-model="user"
+                        required
+                        placeholder="Enter User Name">
+          </b-form-input>
+          <b-button type="submit" variant="primary">Submit</b-button>
+        </b-form>
+      </b-row>
+      <b-row>
         <b-form @submit="onSubmit">
           <b-form-input id="userName"
                         type="text"
@@ -35,7 +46,7 @@ export default {
     HelloWorld
   },
   methods: {
-    onSubmit: function() {
+    onSubmitLogin: function() {
       this.$store.commit('setUserName', this.user)
       this.$store.dispatch('getUserRooms', this.user)
       this.$router.push('/about')

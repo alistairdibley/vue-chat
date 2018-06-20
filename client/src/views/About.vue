@@ -42,18 +42,16 @@
         },
         created() {
             console.log(this.user_name)
-            // this.$store.dispatch('getUserRooms', this.user_name)
-            // this.$store.dispatch('getAllRooms')
+            this.$options.sockets.response = (data) => {
+                // console.log(data)
+                if (data.sid != this.sid) {
+                    this.messages.push(data)
+                }
+            }
         },
         sockets: {
             connect: function () {
                 console.log('socket connected')
-                this.$options.sockets.response = (data) => {
-                    console.log(data)
-                    if (data.sid != this.sid) {
-                        this.messages.push(data)
-                    }
-                },
                 this.$options.sockets.rooms = (data) => {
                     // console.log(data)
                     this.sid = data.sid
