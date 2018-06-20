@@ -10,7 +10,7 @@ Vue.use(BootstrapVue)
 const socketInstance = io('http://127.0.0.1:8000/test', {
   transports: ['websocket'],
 });
-
+// const socketInstance = io('http://127.0.0.1:8000/test');
 // Vue.use(VueSocketio, 'http://192.168.2.114:8000/test', {transports:['websocket']});
 Vue.use(VueSocketio, socketInstance)
 Vue.config.productionTip = false

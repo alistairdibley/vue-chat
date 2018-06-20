@@ -3,6 +3,8 @@ aioredis==1.1.0
 astroid==1.6.5
 async-timeout==3.0.0
 eventlet==0.23.0
+Flask==1.0.2
+flask-cors==3.0.6
 hiredis==0.2.0
 httptools==0.0.11
 isort==4.3.4
