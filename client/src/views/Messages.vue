@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="messages">
         <b-form @submit="clickJoinRoom" inline>
         <label class="sr-only" for="inlineFormInputName2">Name</label>
         <b-input class="mb-2 mr-sm-2 mb-sm-0" id="inlineFormInputName2" placeholder="Room Name" v-model="room_name"/>
@@ -16,9 +16,6 @@
         <b-row align-h="end">
              <b-col><b-table striped hover :items="messages" ></b-table></b-col>
             <b-col cols="4"><b-table :small="true" striped hover @row-clicked="clickonRow" :items="user_rooms"></b-table></b-col>
-        </b-row>
-        <b-row>
-            <b-col cols="4"><b-table striped hover :items="tester"></b-table></b-col>
         </b-row>
     </b-container>
 
@@ -80,9 +77,11 @@
             },
             user_rooms() {
                 return this.$store.state.user_rooms
+                console.log('=============================')
+                console.log(this.$store.state.user_rooms)
             },
             user_name() {
-                return this.$store.user_name
+                return this.$store.state.user_name
             }
         }
     }

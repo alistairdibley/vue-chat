@@ -11,18 +11,18 @@
                         required
                         placeholder="Enter User Name">
           </b-form-input>
-          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-button type="submit" variant="primary">Login</b-button>
         </b-form>
       </b-row>
       <b-row>
         <b-form @submit="onSubmit">
-          <b-form-input id="userName"
+          <b-form-input id="newUserName"
                         type="text"
-                        v-model="user"
+                        v-model="new_user"
                         required
-                        placeholder="Enter User Name">
+                        placeholder="Create User Name">
           </b-form-input>
-          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-button type="submit" variant="primary">Create Me</b-button>
         </b-form>
       </b-row>
     </b-container>
@@ -31,25 +31,30 @@
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+// import HelloWorld from '@/components/HelloWorld.vue'
+import Vuex from "vuex";
 
 export default {
   data() {
     return {
       test: null,
       userName: 'sdsdsds',
-      user: null
+      user: null,
+      new_user: null
     }
   },
   name: 'home',
-  components: {
-    HelloWorld
-  },
+  // components: {
+  //   HelloWorld
+  // },
   methods: {
     onSubmitLogin: function() {
       this.$store.commit('setUserName', this.user)
       this.$store.dispatch('getUserRooms', this.user)
-      this.$router.push('/about')
+      this.$router.push('/messages')
+    },
+    onSubmit: function() {
+      console.log('Submit')
     }
   }
 }

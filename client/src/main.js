@@ -4,7 +4,7 @@ import router from './router'
 import VueSocketio from 'vue-socket.io-extended';
 import io from 'socket.io-client';
 import BootstrapVue from 'bootstrap-vue'
-import store from "./store";
+import store from "./store_old";
 Vue.use(BootstrapVue)
 
 const socketInstance = io('http://127.0.0.1:8000/test', {
