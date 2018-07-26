@@ -22,7 +22,8 @@
   </div>
 </template>
 <script>
-    import Vuex from "vuex";
+    import { mapState } from 'vuex'
+
     export default {
         data() {
             return {
@@ -38,7 +39,7 @@
             }
         },
         created() {
-            console.log(this.user_name)
+
             this.$options.sockets.response = (data) => {
                 // console.log(data)
                 if (data.sid != this.sid) {
@@ -57,6 +58,7 @@
         },
         methods: {
             clickJoinRoom: function (val) {
+                 console.log('----JOIN: ' + this.user_name)
                 this.$socket.emit('join', {'room': this.room_name})
                 this.room_select.push({'value':this.room_name, 'text':this.room_name})
                 // this.$store.dispatch('getAllRooms')
@@ -71,18 +73,10 @@
                 this.room_name = item.name
             }
         },
-        computed: {
-            rooms() {
-                return this.$store.state.rooms
-            },
-            user_rooms() {
-                return this.$store.state.user_rooms
-                console.log('=============================')
-                console.log(this.$store.state.user_rooms)
-            },
-            user_name() {
-                return this.$store.state.user_name
-            }
-        }
+        computed: mapState({
+            user_name: state => state.rooms.user_name,
+            rooms: state => state.rooms.rooms,
+            user_rooms: state => state.rooms.user_rooms
+        })
     }
 </script>
